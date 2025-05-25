@@ -1,0 +1,30 @@
+{
+  "name": "stopwatches",
+  "version": "1.0.0",
+  "description": "Stopwatches for node.js school project at University of Business and Economics in Prague, Faculty of informatics and statistics.",
+  "main": "app.js",
+  "type": "module",
+  "scripts": {
+    "dev": "node --watch app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "Stopwatches"
+  },
+  "keywords": [
+    "stopwatches",
+    "nodejs"
+  ],
+  "author": "Bc. Michaela Hošková",
+  "license": "ISC",
+  "dependencies": {
+    "@hono/node-server": "^1.14.2",
+    "@libsql/client": "^0.15.7",
+    "drizzle-kit": "^0.31.1",
+    "drizzle-orm": "^0.43.1",
+    "ejs": "^3.1.10",
+    "hono": "^4.7.10",
+    "middleware": "^1.0.0"
+  }
+}
