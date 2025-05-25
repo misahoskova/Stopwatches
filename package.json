@@ -2,11 +2,13 @@
   "name": "stopwatches",
   "version": "1.0.0",
   "description": "Stopwatches for node.js school project at University of Business and Economics in Prague, Faculty of informatics and statistics.",
-  "main": "app.js",
+  "main": "index.js",
   "type": "module",
   "scripts": {
-    "dev": "node --watch app.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "node --watch index.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate"
   },
   "repository": {
     "type": "git",
@@ -24,6 +26,7 @@
     "drizzle-kit": "^0.31.1",
     "drizzle-orm": "^0.43.1",
     "ejs": "^3.1.10",
+    "express": "^5.1.0",
     "hono": "^4.7.10",
     "middleware": "^1.0.0"
   }

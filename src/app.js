@@ -11,7 +11,7 @@ app.get('/json', (c) => {
   return c.json({ firstName: 'Franta', lastName: 'Sádlo' });
 });
 
-app.get('/hello/:name', (c) => {
+app.get('/name/:name', (c) => {
   const name = c.req.param('name');
 
   return c.html(`<h1>Hello, ${name}!</h1>`);

@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="initial-scale=1.0" />
+
+    <link rel="stylesheet" href="/style.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@100&family=Montserrat:wght@100&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <link rel="icon" href="/images/favicon.png" />
+
+    <title>Stopwatch</title>
+  </head>
+  <body>
+    <section class="stopwatch">
+      <div class="logo">
+        <img src="images/logo-blue_300.png" alt="logo" />
+      </div>
+      <div class="wrapper">
+        <div class="headline">
+          <button class="help-btn" id="help-btn">
+            <svg
+              width="32"
+              height="32"
+              viewBox="0 0 32 32"
+              xmlns="http://www.w3.org/2000/svg"
+              class="icon-size-20px question"
+              data-class="max400"
+              data-html="true"
+              data-isicon="true"
+              tabindex="-1"
+            >
+              <g
+                id="Page-1"
+                stroke="none"
+                stroke-width="1"
+                fill="none"
+                fill-rule="evenodd"
+              >
+                <g id="Icon/Light/Agenda/Help">
+                  <path id="Rectangle" d="M0 0h32v32H0z"></path>
+                  <circle
+                    id="Oval"
+                    stroke="#1E1B18"
+                    stroke-width="1.5"
+                    cx="16"
+                    cy="16"
+                    r="11.25"
+                  ></circle>
+                  <path
+                    d="M13 13a3 3 0 013-3h1a3 3 0 013 3v1a2 2 0 01-2 2 2 2 0 00-2 2v1h0"
+                    id="Path-20"
+                    stroke="#004B96"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                  ></path>
+                  <circle
+                    id="svg387-Oval"
+                    fill="#004B96"
+                    cx="16"
+                    cy="22"
+                    r="1"
+                  ></circle>
+                </g>
+              </g>
+            </svg>
+          </button>
+          <h1><b>Stopwatch</b></h1>
+        </div>
+        <div class="popup" id="popup">
+          <div class="overlay"></div>
+          <div class="content">
+            <div class="close-btn" id="close-btn">&times;</div>
+            <h1><b>Help</b></h1>
+            <p id="help-text"></p>
+          </div>
+        </div>
+        <div class="time-wrapper">
+          <p class="time" id="hours">00</p>
+          <p>:</p>
+          <p class="class" id="minutes">00</p>
+          <p>:</p>
+          <p class="time" id="seconds">00</p>
+        </div>
+
+        <div class="buttons">
+          <button class="btn-start" id="start"><b>Start/Restart</b></button>
+          <button class="btn-stop" id="stop"><b>Stop</b></button>
+        </div>
+      </div>
+    </section>
+    <form id="form">
+      <div class="time-form">
+        <div class="input-group">
+          <input id="desc-input" class="input" type="text" required />
+          <label id="desc-label" for="">Description</label>
+        </div>
+      </div>
+      <div id="desc-error"></div>
+      <div class="time-form">
+        <div class="input-group">
+          <input id="begin-input" class="input" type="text" required />
+          <div class="begin-error"></div>
+          <label id="begin-label" class="label" for="">Begin</label>
+          <label id="begin-content" class="have-content" for="">Begin</label>
+        </div>
+        <div class="input-group">
+          <input id="end-input" class="input" type="text" required />
+          <div class="end-error"></div>
+          <label id="end-label" class="label" for="">End</label>
+          <label id="end-content" class="have-content" for="">End</label>
+        </div>
+      </div>
+      <div class="time-form">
+        <div class="input-group">
+          <input id="dur-input" class="input" type="text" required />
+          <label id="dur-label" class="label" for="">Duration</label>
+          <label id="dur-content" class="have-content" for="">Duration</label>
+        </div>
+      </div>
+      <div class="form-buttons">
+        <button class="btn-save" id="save"><b>Save</b></button>
+      </div>
+    </form>
+    <footer>
+      <div class="footer">
+        <p>Created by Mousey &#x1F42D; with &#x2764;</p>
+      </div>
+    </footer>
+  </body>
+  <script src="//code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.min.js"></script>
+
+  <script src="/script.js"></script>
+</html>

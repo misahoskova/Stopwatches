@@ -1,0 +1,358 @@
+html,
+body,
+footer,
+.forms {
+  background-color: rgb(247, 247, 250);
+  font-family: 'Montserrat', sans-serif;
+  color: black;
+  margin: 0;
+  padding: 0;
+  max-width: 1440px;
+}
+
+.logo {
+  display: flex;
+  justify-content: center;
+}
+
+.logo img {
+  width: 8%;
+  margin-top: 1vw;
+  margin-bottom: -4vw;
+}
+
+.stopwatch {
+  background-color: rgb(247, 247, 250);
+}
+
+.gbtn {
+  background-color: rgb(247, 247, 250);
+  padding-top: 25%;
+}
+
+.wrapper {
+  max-width: 600px;
+  width: 60%;
+  text-align: center;
+  padding: 40px 0;
+  margin: 5vw auto 0;
+  border-radius: 0.25rem;
+  border: 1px solid rgba(230, 230, 230, 1);
+  font-weight: bolder;
+  background-color: rgb(255, 255, 255);
+  font-family: 'Montserrat', sans-serif;
+}
+
+.buttons,
+.form-buttons {
+  display: flex;
+  justify-content: space-evenly;
+  flex-direction: row;
+}
+
+.form-buttons {
+  background-color: rgb(247, 247, 250);
+  padding-top: 1.3vw;
+}
+
+.btn-start,
+.btn-stop,
+.btn-save,
+.btn-change,
+.btn-cancel,
+.btn-google {
+  align-items: center;
+  border-radius: 0.25rem;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  box-sizing: border-box;
+  justify-content: center;
+  text-align: center;
+  min-width: 100px;
+  min-height: 42px;
+  font-size: 14px;
+  font-family: 'Montserrat', sans-serif;
+}
+
+.btn-start:disabled {
+  cursor: not-allowed;
+  background-color: rgba(42, 145, 255, 1) !important;
+}
+
+.btn-start:disabled:hover {
+  background-color: rgb(42, 145, 255, 1) !important;
+}
+
+.btn-stop:disabled {
+  cursor: not-allowed;
+  background-color: rgb(242, 242, 242) !important;
+}
+
+.btn-stop:disabled:hover {
+  background-color: rgb(204, 204, 204) !important;
+}
+
+.buttons #start,
+.form-buttons #save {
+  background-color: rgb(25, 111, 202);
+  color: rgb(255, 255, 255);
+}
+
+#stop,
+#change,
+#cancel {
+  background-color: rgb(230, 230, 230);
+  color: rgb(25, 111, 202);
+}
+
+.time-wrapper {
+  display: flex;
+  justify-content: center;
+}
+
+.time-wrapper p {
+  font-size: 6vw;
+  align-items: center;
+  font-family: 'Montserrat', sans-serif;
+}
+
+.buttons #start:hover,
+.form-buttons #save:hover {
+  background-color: rgb(26, 67, 131);
+}
+
+#stop:hover,
+#reset:hover,
+#change:hover,
+#cancel:hover {
+  background-color: rgb(210, 210, 210);
+}
+
+.footer {
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  background-color: rgb(247, 247, 250);
+}
+
+.footer p {
+  font-size: 1vw;
+  margin-top: 2.5vw;
+  font-family: 'Montserrat', sans-serif;
+}
+
+form {
+  /* display: flex; */
+  display: none;
+  justify-content: center;
+  align-items: center;
+  background-color: rgb(247, 247, 250);
+  padding-top: 1.3vw;
+  box-sizing: border-box;
+  flex-direction: column;
+}
+
+.time-form {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgb(247, 247, 250);
+  padding-top: 1.3vw;
+  box-sizing: border-box;
+  flex-direction: row;
+}
+
+.input-group {
+  position: relative;
+}
+
+.input-group label {
+  font-size: 16px;
+  font-family: 'Montserrat', sans-serif;
+  position: absolute;
+  top: 50%;
+  left: 0.5vw;
+  transform: translateY(-50%);
+  color: rgb(141, 141, 141);
+  pointer-events: none;
+  transition: 0.5s;
+  font-weight: bolder;
+}
+
+.input-group input {
+  height: 42px;
+  border-radius: 0.25rem;
+  border: 1px solid rgba(230, 230, 230, 1);
+  background-color: rgb(255, 255, 255);
+  font-size: 16px;
+  font-family: 'Montserrat', sans-serif;
+  color: black;
+  outline: none;
+  padding: 0.6vw;
+}
+
+#desc-input,
+#dur-input {
+  width: 600px;
+}
+
+#begin-input,
+#end-input {
+  width: 280px;
+}
+
+#begin-input {
+  margin-right: 2.7vw;
+}
+
+.input-group input:focus ~ label {
+  top: 0;
+  font-size: 13px;
+  color: rgb(25, 111, 202);
+  background-color: rgb(255, 255, 255);
+  padding-left: 0.5vw;
+  padding-right: 0.5vw;
+  font-weight: bolder;
+  margin-left: 0.5vw;
+}
+
+.input-group input:valid ~ label {
+  top: 0;
+  font-size: 13px;
+  color: black;
+  background-color: rgb(255, 255, 255);
+  font-weight: bolder;
+  margin-left: 0.5vw;
+  padding-left: 0.5vw;
+  padding-right: 0.5vw;
+}
+
+.input-group input:focus {
+  border-color: rgb(25, 111, 202);
+}
+
+.input-group input:valid {
+  border-color: black;
+}
+
+.input-group label.have-content {
+  top: 0;
+  font-size: 13px;
+  color: black;
+  background-color: rgb(255, 255, 255);
+  padding-left: 0.5vw;
+  padding-right: 0.5vw;
+  font-weight: bolder;
+  margin-left: 0.5vw;
+}
+
+#dur-content {
+  top: 0;
+  font-size: 13px;
+  color: rgb(141, 141, 141);
+  background-color: rgb(242, 242, 242);
+  padding-left: 0.5vw;
+  padding-right: 0.5vw;
+  font-weight: bolder;
+  margin-left: 0.5vw;
+}
+
+.headline {
+  display: flex;
+  flex-direction: column;
+}
+
+.help-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  margin-left: 92.5%;
+  margin-top: -2vw;
+  background-color: rgb(255, 255, 255);
+}
+
+svg {
+  width: 100%;
+  height: 100%;
+}
+
+.popup .overlay {
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 1;
+  display: none;
+}
+
+.popup .content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  background-color: rgb(255, 255, 255);
+  width: 600px;
+  height: 440px;
+  z-index: 2;
+  text-align: center;
+  padding: 20px;
+  box-sizing: border-box;
+  border-radius: 0.25rem;
+  border: 1px solid rgba(230, 230, 230, 1);
+}
+
+.popup h1 {
+  text-align: center;
+  font-size: 2.5vw;
+}
+
+.popup .close-btn {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  width: 22px;
+  height: 22px;
+  font-size: 25px;
+  line-height: 30px;
+  text-align: center;
+  background-color: rgb(255, 255, 255);
+  color: rgb(25, 111, 202);
+  border-radius: 50%;
+  cursor: pointer;
+  border: 1.5px solid black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.popup.active .overlay {
+  display: block;
+}
+
+.popup.active .content {
+  transition: all 300ms ease-in-out;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+#desc-error,
+#begin-error,
+#end-error {
+  color: rgb(199, 0, 0);
+  font-size: 12px;
+  font-weight: bolder;
+  font-family: 'Montserrat', sans-serif;
+  margin-top: 0.5vw;
+  display: flex;
+  margin-left: -29.5vw;
+}
+
+input:disabled {
+  background-color: rgb(242, 242, 242);
+  cursor: not-allowed;
+}
