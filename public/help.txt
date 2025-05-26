@@ -1,0 +1,7 @@
+The stopwatch is used to record the duration of work.<hr>
+Use the "Start/Restart" button to turn on the stopwatch.</br>
+You stop them with the "Stop" button.</br>
+A record of the start time, end time and duration of the work is saved in the fields below the stopwatch.</br></br>
+Press the "Save" button to reset the stopwatch and save your work to the calendar.</br>
+But before you do that, you need to fill in the "Description" field, which must be filled in manually.</br></br>
+Press the "Start/Restart" button again to start a new time period.
