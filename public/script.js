@@ -192,6 +192,22 @@ function getValues() {
   }
 }
 
+function disableStart() {
+  $('#start').prop('disabled', true);
+}
+
+function enableStart() {
+  $('#start').prop('disabled', false);
+}
+
+function disableStop() {
+  $('#stop').prop('disabled', true);
+}
+
+function enableStop() {
+  $('#stop').prop('disabled', false);
+}
+
 $(document).ready(function () {
   const States = {
     Standby: 0,
@@ -206,9 +222,14 @@ $(document).ready(function () {
   minutes = 0;
   seconds = 0;
 
+  enableStart();
+  disableStop();
+
   if (localStorage.getItem('state') !== null) {
     state = localStorage.getItem('state');
     if (state == States.Running) {
+      disableStart();
+      enableStop();
       currentStartTime = new Date(localStorage.getItem('currentStartTime'));
       var duration = currentEndTime - currentStartTime;
       interval = duration;
@@ -218,6 +239,8 @@ $(document).ready(function () {
       startTimer();
       addStartTime();
     } else if (state == States.Stopped) {
+      enableStart();
+      disableStop();
       currentStartTime = new Date(localStorage.getItem('currentStartTime'));
       currentEndTime = new Date(localStorage.getItem('currentEndTime'));
       var duration = currentEndTime - currentStartTime;
@@ -255,6 +278,8 @@ $(document).ready(function () {
       startTimer();
       addStartTime();
     }
+    disableStart();
+    enableStop();
     localStorage.setItem('state', state);
   });
 
@@ -269,6 +294,8 @@ $(document).ready(function () {
       addDuration();
       state = States.Stopped;
     }
+    enableStart();
+    disableStop();
     localStorage.setItem('state', state);
   });
 

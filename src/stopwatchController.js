@@ -8,36 +8,6 @@ let state = States.Standby;
 let currentStartTime = null;
 let currentEndTime = null;
 
-function formatTime(n) {
-  return n < 10 ? `0${n}` : n;
-}
-
-function displayTime(time) {
-  return (
-    formatTime(time.getHours()) +
-    ':' +
-    formatTime(time.getMinutes()) +
-    ':' +
-    formatTime(time.getSeconds()) +
-    ' ' +
-    formatTime(time.getDate()) +
-    '.' +
-    formatTime(time.getMonth() + 1) +
-    '. ' +
-    time.getFullYear()
-  );
-}
-
-function formattedDuration(duration) {
-  return (
-    formatTime(Math.floor(duration / 1000 / 60 / 60)) +
-    ':' +
-    formatTime(Math.floor((duration / 1000 / 60) % 60)) +
-    ':' +
-    formatTime(Math.floor((duration / 1000) % 60))
-  );
-}
-
 function startStopwatch() {
   if (state === States.Standby || state === States.Stopped) {
     currentStartTime = new Date();
