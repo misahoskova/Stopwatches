@@ -32,7 +32,7 @@ function parseTime(timeStr) {
   var time = new Date();
   if (timeStr.length != 20) {
     console.log(timeStr);
-    throw 'Špatný formát času:špatná délka ' + timeStr.length;
+    throw 'Špatný formát času: špatná délka ' + timeStr.length;
   }
   time.setHours(timeStr.substring(0, 2));
   time.setMinutes(timeStr.substring(3, 5));

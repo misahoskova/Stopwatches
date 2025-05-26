@@ -21,9 +21,13 @@ app.use('/api/stopwatch', stopwatchRouter);
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
-// Hlavní stránka
 app.get('/', (req, res) => {
-  res.render('index');
+  res.render('index', {
+    description: '',
+    formattedStartTime: '',
+    formattedEndTime: '',
+    formattedDuration: '',
+  });
 });
 
 // Spuštění serveru
