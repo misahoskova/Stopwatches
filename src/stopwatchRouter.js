@@ -1,38 +1,28 @@
 import express from 'express'
-import { startStopwatch, stopStopwatch, saveStopwatch } from './stopwatchController.js'
+import * as controller from './stopwatchController.js'
 
 import { getFullHistory, getEntryById, createEntry, updateEntry, deleteEntry } from './db.js'
 
 const router = express.Router()
 
 router.post('/start', (req, res) => {
-  const result = startStopwatch()
-  res.json(result)
+  controller.startStopwatch()
+  res.redirect('/')
 })
 
 router.post('/stop', (req, res) => {
-  const result = stopStopwatch()
-  res.json(result)
+  controller.stopStopwatch()
+  res.redirect('/')
 })
 
 router.post('/save', async (req, res) => {
   try {
     const { description, start, end, duration } = req.body
-
-    if (!description || !start || !end || typeof duration !== 'number') {
-      return res.status(400).json({ error: 'Neplatná data' })
-    }
-
-    const entry = await createEntry({
-      description,
-      start: new Date(start),
-      end: new Date(end),
-      duration,
-    })
-
-    res.status(201).json({ message: 'Záznam uložen', entry })
+    await createEntry({ description, start, end, duration })
+    res.redirect('/')
   } catch (err) {
-    res.status(500).json({ error: err.message })
+    console.error('Chyba při ukládání záznamu:', err)
+    res.status(500).send('Chyba při ukládání záznamu')
   }
 })
 
@@ -73,6 +63,10 @@ router.delete('/entry/:id', async (req, res) => {
   } catch (err) {
     res.status(500).json({ error: err.message })
   }
+})
+
+router.get('/elapsed', (req, res) => {
+  res.json(controller.getElapsed())
 })
 
 export default router
