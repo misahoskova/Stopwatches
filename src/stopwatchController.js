@@ -2,50 +2,103 @@ const States = {
   Standby: 0,
   Running: 1,
   Stopped: 2,
-};
+}
 
-let state = States.Standby;
-let currentStartTime = null;
-let currentEndTime = null;
+let state = States.Standby
+let currentStartTime = null
+let currentEndTime = null
+
+function pad(num) {
+  return num < 10 ? '0' + num : String(num)
+}
+
+function displayTime(date) {
+  if (!(date instanceof Date)) {
+    throw new Error('Invalid date provided to displayTime')
+  }
+  return `${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`
+}
+
+function formatDuration(ms) {
+  const totalSec = Math.floor(ms / 1000)
+  const hh = Math.floor(totalSec / 3600)
+  const mm = Math.floor((totalSec % 3600) / 60)
+  const ss = totalSec % 60
+  return `${pad(hh)}:${pad(mm)}:${pad(ss)}`
+}
 
 export function startStopwatch() {
   if (state === States.Standby || state === States.Stopped) {
-    currentStartTime = new Date();
-    state = States.Running;
+    currentStartTime = new Date()
+    currentEndTime = null
+    state = States.Running
   }
   return {
-    state,
-    currentStartTime,
     formattedStartTime: displayTime(currentStartTime),
-  };
+  }
 }
 
 export function stopStopwatch() {
-  if (state === States.Running) {
-    currentEndTime = new Date();
-    state = States.Stopped;
+  if (state !== States.Running) {
+    throw new Error('Stopwatch is not running')
   }
-  const duration = currentEndTime - currentStartTime;
+  currentEndTime = new Date()
+  state = States.Stopped
+  const durationMs = currentEndTime - currentStartTime
   return {
-    state,
-    currentEndTime,
     formattedEndTime: displayTime(currentEndTime),
-    formattedDuration: formattedDuration(duration),
-  };
+    formattedDuration: formatDuration(durationMs),
+  }
 }
 
 export function saveStopwatch(description) {
   if (state !== States.Stopped) {
-    throw new Error('Stopwatch must be stopped');
+    throw new Error('Stopwatch must be stopped before saving')
   }
   const result = {
     description,
     start: currentStartTime,
     end: currentEndTime,
     duration: currentEndTime - currentStartTime,
-  };
-  state = States.Standby;
-  currentStartTime = null;
-  currentEndTime = null;
-  return result;
+  }
+
+  state = States.Standby
+  currentStartTime = null
+  currentEndTime = null
+  return result
+}
+
+export function getElapsed() {
+  if (state !== States.Running) {
+    return { formattedElapsed: '00:00:00' }
+  }
+  const now = new Date()
+  return { formattedElapsed: formatDuration(now - currentStartTime) }
+}
+
+export function getStateForRender() {
+  const isRunning = state === States.Running
+  const isStopped = state === States.Stopped
+
+  let formattedStartTime = ''
+  let formattedEndTime = ''
+  let formattedDuration = ''
+
+  if (isRunning && currentStartTime) {
+    formattedStartTime = displayTime(currentStartTime)
+  } else if (isStopped && currentStartTime && currentEndTime) {
+    formattedStartTime = displayTime(currentStartTime)
+    formattedEndTime = displayTime(currentEndTime)
+    formattedDuration = formatDuration(currentEndTime - currentStartTime)
+  }
+
+  const formattedElapsed = isRunning ? formatDuration(Date.now() - currentStartTime) : '00:00:00'
+
+  return {
+    description: '',
+    isRunning,
+    formattedStartTime,
+    formattedEndTime,
+    formattedDuration,
+  }
 }
