@@ -1,10 +1,9 @@
-import { date } from 'drizzle-orm/mysql-core';
-import { sqliteTable, int, text } from 'drizzle-orm/sqlite-core';
+import { sqliteTable, int, text } from 'drizzle-orm/sqlite-core'
 
 export const stopwatchHistoryTable = sqliteTable('stopwatchHistoryTable', {
   id: int().primaryKey({ autoIncrement: true }),
   description: text().notNull(),
-  start: date().notNull(),
-  end: date().notNull(),
+  start: text().notNull(),
+  end: text().notNull(),
   duration: int().notNull(),
-});
+})
