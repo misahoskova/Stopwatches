@@ -79,6 +79,7 @@ export function getElapsed() {
 export function getStateForRender() {
   const isRunning = state === States.Running
   const isStopped = state === States.Stopped
+  const isStandby = state === States.Standby
 
   let formattedStartTime = ''
   let formattedEndTime = ''
@@ -90,6 +91,10 @@ export function getStateForRender() {
     formattedStartTime = displayTime(currentStartTime)
     formattedEndTime = displayTime(currentEndTime)
     formattedDuration = formatDuration(currentEndTime - currentStartTime)
+  } else if (isStandby) {
+    formattedStartTime = '00:00:00'
+    formattedEndTime = '00:00:00'
+    formattedDuration = '00:00:00'
   }
 
   const formattedElapsed = isRunning ? formatDuration(Date.now() - currentStartTime) : '00:00:00'
@@ -97,6 +102,9 @@ export function getStateForRender() {
   return {
     description: '',
     isRunning,
+    isStopped,
+    isStandby,
+    formattedElapsed,
     formattedStartTime,
     formattedEndTime,
     formattedDuration,

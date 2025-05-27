@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Stopky</title>
-  <!-- Bulma CSS -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
 </head>
 <body>
@@ -12,23 +11,34 @@
     <div class="container">
       <h1 class="title">Stopky</h1>
 
-      <!-- Zobrazení času -->
+      <!-- Timer -->
       <div class="box has-text-centered">
-        <h2 id="timer" class="subtitle"><%= typeof formattedElapsed !== 'undefined' ? formattedElapsed : '00:00:00' %></h2>
+        <h2 id="timer" class="subtitle">
+          <%= typeof formattedElapsed !== 'undefined' ? formattedElapsed : '00:00:00' %>
+        </h2>
       </div>
 
-      <!-- Tlačítka Start/Restart a Pause jako formuláře -->
+      <!-- Start / Pause -->
       <div class="buttons is-centered">
-        <form action="/api/stopwatch/start" method="post" style="display:inline">
-          <button class="button is-primary" type="submit">Start/Restart</button>
+        <form action="/api/stopwatch/start" method="post" style="display:inline"
+              onsubmit="document.getElementById('startBtn').disabled = true">
+          <button id="startBtn" class="button is-primary" type="submit"
+                  <%= isRunning ? 'disabled' : '' %>>
+            Start/Restart
+          </button>
         </form>
-        <form action="/api/stopwatch/stop" method="post" style="display:inline">
-          <button class="button is-warning" type="submit" <%= !formattedStartTime ? 'disabled' : '' %>>Pause</button>
+
+        <form action="/api/stopwatch/stop" method="post" style="display:inline"
+              onsubmit="document.getElementById('pauseBtn').disabled = true">
+          <button id="pauseBtn" class="button is-warning" type="submit"
+                  <%= !isRunning ? 'disabled' : '' %>>
+            Pause
+          </button>
         </form>
       </div>
 
-      <!-- Formulář Save obsahující Description, Start, End, Duration -->
-      <form action="/api/stopwatch/save" method="post">
+      <!-- Save Form -->
+      <form action="/api/stopwatch/save" method="post" onsubmit="document.getElementById('saveBtn').disabled = true">
         <div class="field">
           <label class="label">Description</label>
           <div class="control">
@@ -63,19 +73,32 @@
         </div>
 
         <div class="buttons is-centered">
-          <button class="button is-success" type="submit" <%= !formattedDuration ? 'disabled' : '' %>>Save</button>
+<button
+  id="saveBtn"
+  class="button is-success"
+  type="submit"
+  <%= isStopped ? '' : 'disabled' %>
+  onsubmit="this.disabled=true"
+>
+  Save
+</button>
         </div>
       </form>
+
     </div>
   </section>
 
+  <!-- Polling elapsed -->
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       const timerEl = document.getElementById('timer');
       setInterval(async () => {
-        const res = await fetch('/api/stopwatch/elapsed');
-        const { formattedElapsed } = await res.json();
-        timerEl.textContent = formattedElapsed;
+        try {
+          const res = await fetch('/api/stopwatch/elapsed');
+          if (!res.ok) return;
+          const { formattedElapsed } = await res.json();
+          timerEl.textContent = formattedElapsed;
+        } catch {}
       }, 1000);
     });
   </script>
