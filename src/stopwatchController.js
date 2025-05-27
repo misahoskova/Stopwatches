@@ -8,7 +8,7 @@ let state = States.Standby;
 let currentStartTime = null;
 let currentEndTime = null;
 
-function startStopwatch() {
+export function startStopwatch() {
   if (state === States.Standby || state === States.Stopped) {
     currentStartTime = new Date();
     state = States.Running;
@@ -20,7 +20,7 @@ function startStopwatch() {
   };
 }
 
-function stopStopwatch() {
+export function stopStopwatch() {
   if (state === States.Running) {
     currentEndTime = new Date();
     state = States.Stopped;
@@ -34,7 +34,7 @@ function stopStopwatch() {
   };
 }
 
-function saveStopwatch(description) {
+export function saveStopwatch(description) {
   if (state !== States.Stopped) {
     throw new Error('Stopwatch must be stopped');
   }
@@ -49,5 +49,3 @@ function saveStopwatch(description) {
   currentEndTime = null;
   return result;
 }
-
-export { startStopwatch, stopStopwatch, saveStopwatch };
