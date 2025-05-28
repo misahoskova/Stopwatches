@@ -3,6 +3,7 @@ import path from 'path'
 import { fileURLToPath } from 'url'
 import stopwatchRouter from './src/stopwatchRouter.js'
 import { getStateForRender } from './src/stopwatchController.js'
+import { getFullHistory } from './src/db.js'
 
 const app = express()
 const port = 3000
@@ -25,6 +26,16 @@ app.set('views', path.join(__dirname, 'views'))
 app.get('/', (req, res) => {
   const state = getStateForRender()
   res.render('index', state)
+})
+
+app.get('/history', async (req, res) => {
+  try {
+    const entries = await getFullHistory()
+    res.render('history', { entries })
+  } catch (err) {
+    console.error(err)
+    res.status(500).send('Chyba při načítání historie')
+  }
 })
 
 // Spuštění serveru

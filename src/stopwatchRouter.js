@@ -69,4 +69,9 @@ router.get('/elapsed', (req, res) => {
   res.json(controller.getElapsed())
 })
 
+router.get('/history', async (req, res) => {
+  const entries = await getFullHistory()
+  res.render('history', { entries })
+})
+
 export default router
