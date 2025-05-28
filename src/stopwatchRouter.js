@@ -74,4 +74,17 @@ router.get('/history', async (req, res) => {
   res.render('history', { entries })
 })
 
+router.post('/entry/:id/update', async (req, res) => {
+  const id = Number(req.params.id)
+  const { start, end, duration, description } = req.body
+
+  try {
+    await updateEntry(id, { start, end, duration, description })
+    res.redirect('/history')
+  } catch (err) {
+    console.error('Chyba při aktualizaci záznamu:', err)
+    res.status(500).send('Nepodařilo se aktualizovat záznam')
+  }
+})
+
 export default router

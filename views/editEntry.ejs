@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="cs">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Upravit záznam #<%= entry.id %></title>
+    <!-- Bulma CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css" />
+  </head>
+  <body>
+    <section class="section">
+      <div class="container">
+        <h1 class="title">Upravit záznam #<%= entry.id %></h1>
+        <form action="/api/stopwatch/entry/<%= entry.id %>/update" method="post">
+          <div class="field">
+            <label class="label">ID</label>
+            <div class="control">
+              <input class="input" type="text" name="id" value="<%= entry.id %>" readonly />
+            </div>
+          </div>
+          <div class="field">
+            <label class="label">Start</label>
+            <div class="control">
+              <input class="input" type="text" name="start" value="<%= entry.start %>" required />
+            </div>
+          </div>
+          <div class="field">
+            <label class="label">End</label>
+            <div class="control">
+              <input class="input" type="text" name="end" value="<%= entry.end %>" required />
+            </div>
+          </div>
+          <div class="field">
+            <label class="label">Duration</label>
+            <div class="control">
+              <input class="input" type="text" name="duration" value="<%= entry.duration %>" required />
+            </div>
+          </div>
+          <div class="field">
+            <label class="label">Description</label>
+            <div class="control">
+              <textarea class="textarea" name="description" placeholder="Popis"> <%= entry.description %> </textarea>
+            </div>
+          </div>
+          <div class="field is-grouped">
+            <div class="control">
+              <button class="button is-primary" type="submit">Save</button>
+            </div>
+            <div class="control">
+              <a class="button is-light" href="/history">Cancel</a>
+            </div>
+          </div>
+        </form>
+      </div>
+    </section>
+  </body>
+</html>
