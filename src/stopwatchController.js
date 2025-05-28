@@ -7,6 +7,7 @@ const States = {
 let state = States.Standby
 let currentStartTime = null
 let currentEndTime = null
+let lastDuration = ''
 
 function pad(num) {
   return num < 10 ? '0' + num : String(num)
@@ -39,6 +40,7 @@ export function startStopwatch() {
     currentStartTime = new Date()
     currentEndTime = null
     state = States.Running
+    lastDuration = ''
   }
   return {
     formattedStartTime: displayDateTime(currentStartTime),
@@ -52,6 +54,7 @@ export function stopStopwatch() {
   currentEndTime = new Date()
   state = States.Stopped
   const durationMs = currentEndTime - currentStartTime
+  lastDuration = formatDuration(durationMs)
   return {
     formattedEndTime: displayDateTime(currentEndTime),
     formattedDuration: formatDuration(durationMs),
@@ -76,6 +79,9 @@ export function saveStopwatch(description) {
 }
 
 export function getElapsed() {
+  if (state === States.Stopped) {
+    return { formattedElapsed: lastDuration }
+  }
   if (state !== States.Running) {
     return { formattedElapsed: '00:00:00' }
   }
@@ -97,7 +103,7 @@ export function getStateForRender() {
   } else if (isStopped && currentStartTime && currentEndTime) {
     formattedStartTime = displayDateTime(currentStartTime)
     formattedEndTime = displayDateTime(currentEndTime)
-    formattedDuration = formatDuration(currentEndTime - currentStartTime)
+    formattedDuration = lastDuration
   } else if (isStandby) {
     formattedStartTime = '00:00:00'
     formattedEndTime = '00:00:00'
