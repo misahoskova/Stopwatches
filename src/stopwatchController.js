@@ -13,10 +13,17 @@ function pad(num) {
 }
 
 function displayTime(date) {
-  if (!(date instanceof Date)) {
-    throw new Error('Invalid date provided to displayTime')
-  }
+  if (!(date instanceof Date)) throw new Error('Invalid date')
   return `${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`
+}
+
+function displayDateTime(date) {
+  if (!(date instanceof Date)) throw new Error('Invalid date')
+  const timePart = displayTime(date)
+  const day = pad(date.getDate())
+  const month = pad(date.getMonth() + 1)
+  const year = date.getFullYear()
+  return `${timePart}, ${day}:${month}:${year}`
 }
 
 function formatDuration(ms) {
@@ -34,7 +41,7 @@ export function startStopwatch() {
     state = States.Running
   }
   return {
-    formattedStartTime: displayTime(currentStartTime),
+    formattedStartTime: displayDateTime(currentStartTime),
   }
 }
 
@@ -46,7 +53,7 @@ export function stopStopwatch() {
   state = States.Stopped
   const durationMs = currentEndTime - currentStartTime
   return {
-    formattedEndTime: displayTime(currentEndTime),
+    formattedEndTime: displayDateTime(currentEndTime),
     formattedDuration: formatDuration(durationMs),
   }
 }
@@ -86,10 +93,10 @@ export function getStateForRender() {
   let formattedDuration = ''
 
   if (isRunning && currentStartTime) {
-    formattedStartTime = displayTime(currentStartTime)
+    formattedStartTime = displayDateTime(currentStartTime)
   } else if (isStopped && currentStartTime && currentEndTime) {
-    formattedStartTime = displayTime(currentStartTime)
-    formattedEndTime = displayTime(currentEndTime)
+    formattedStartTime = displayDateTime(currentStartTime)
+    formattedEndTime = displayDateTime(currentEndTime)
     formattedDuration = formatDuration(currentEndTime - currentStartTime)
   } else if (isStandby) {
     formattedStartTime = '00:00:00'
