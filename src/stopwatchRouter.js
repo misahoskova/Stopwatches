@@ -45,23 +45,23 @@ router.get('/entry/:id', async (req, res) => {
   }
 })
 
-router.post('/entry/:id', async (req, res) => {
-  try {
-    const id = Number(req.params.id)
-    await updateEntry(id, req.body)
-    res.json({ message: 'Záznam upraven' })
-  } catch (err) {
-    res.status(500).json({ error: err.message })
+router.get('/entry/:id/edit', async (req, res) => {
+  const id = Number(req.params.id)
+  const entry = await getEntryById(id)
+  if (!entry) {
+    return res.status(404).send('Záznam nenalezen')
   }
+  res.render('editEntry', { entry })
 })
 
-router.delete('/entry/:id', async (req, res) => {
+router.post('/entry/:id/delete', async (req, res) => {
+  const id = Number(req.params.id)
   try {
-    const id = Number(req.params.id)
     await deleteEntry(id)
-    res.json({ message: 'Záznam smazán' })
+    res.redirect('/history')
   } catch (err) {
-    res.status(500).json({ error: err.message })
+    console.error(err)
+    res.status(500).send('Chyba při mazání')
   }
 })
 

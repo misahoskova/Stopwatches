@@ -41,7 +41,7 @@
 
                 <!-- Delete: vyžádá potvrzení, pak smaže -->
                 <form
-                  action="/api/stopwatch/entry/<%= entry.id %>?_method=DELETE"
+                  action="/api/stopwatch/entry/<%= entry.id %>/delete"
                   method="post"
                   style="display: inline"
                   onsubmit="return confirm('Opravdu smazat záznam #<%= entry.id %>?');"
