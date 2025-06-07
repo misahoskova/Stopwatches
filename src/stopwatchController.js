@@ -24,7 +24,7 @@ function displayDateTime(date) {
   const day = pad(date.getDate())
   const month = pad(date.getMonth() + 1)
   const year = date.getFullYear()
-  return `${timePart}, ${day}:${month}:${year}`
+  return `${timePart}, ${day}.${month}.${year}`
 }
 
 function formatDuration(ms) {

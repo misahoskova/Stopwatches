@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Stopky</title>
+  <title>Stopwatches</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
 </head>
 <body>
@@ -18,13 +18,13 @@
   </div>
 
   <div id="navbarBasicExample" class="navbar-menu">
-    <div class="navbar-start">
-      <a class="navbar-item" href="/history" class="button is-link">Zobrazit historii</a>
+    <div class="navbar-end">
+      <a class="navbar-item" href="/history" class="button is-info">Show history</a>
         </div>
       </div>
     </div>
 
-    <div class="navbar-end">
+    <!-- <div class="navbar-end">
       <div class="navbar-item">
         <div class="buttons">
           <a class="button is-primary">
@@ -35,12 +35,12 @@
           </a>
         </div>
       </div>
-    </div>
+    </div> -->
   </div>
 </nav>
-  <section class="section">
-    <div class="container">
-      <h1 class="title">Stopky</h1>
+  <section class="section is-centered">
+    <div class="column is-centered">
+      <h1 class="title">Stopwatches</h1>
 
       <!-- Timer -->
       <div class="box has-text-centered">
@@ -61,7 +61,7 @@
 
         <form action="/api/stopwatch/stop" method="post" style="display:inline"
               onsubmit="document.getElementById('pauseBtn').disabled = true">
-          <button id="pauseBtn" class="button is-warning" type="submit"
+          <button id="pauseBtn" class="button is-danger" type="submit"
                   <%= !isRunning ? 'disabled' : '' %>>
             Pause
           </button>
