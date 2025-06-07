@@ -52,7 +52,7 @@
                 </form>
 
                 <!-- Send: nic zatím neprovádí -->
-                <button class="button is-small is-warning" title="Odeslat">
+                <button class="button is-small is-warning" onclick="openSendModal(<%= entry.id %>)" title="Odeslat">
                   <span class="icon"><i class="fas fa-paper-plane"></i></span>
                 </button>
               </td>
@@ -65,8 +65,55 @@
           </tbody>
         </table>
 
+        <div class="modal" id="sendModal">
+          <div class="modal-background" onclick="closeSendModal()"></div>
+          <div class="modal-content box">
+            <form onsubmit="return validateCompanySelection()">
+              <div class="field">
+                <label class="label">Vyberte firmu</label>
+                <div class="control">
+                  <div class="select is-fullwidth">
+                    <select id="companySelect" required>
+                      <option value="">-- Vyberte firmu --</option>
+                      <option value="Firma A">Firma A</option>
+                      <option value="Firma B">Firma B</option>
+                      <option value="Firma C">Firma C</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <div class="buttons mt-4">
+                <button class="button is-success" type="submit">Odeslat</button>
+                <button type="button" class="button" onclick="closeSendModal()">Zrušit</button>
+              </div>
+            </form>
+          </div>
+        </div>
+
         <a href="/" class="button is-link">Back to stopwatch</a>
       </div>
     </section>
   </body>
+
+  <script>
+    function openSendModal(id) {
+      // Můžeš si tady třeba uložit id do hidden inputu, pokud budeš chtít
+      document.getElementById('sendModal').classList.add('is-active')
+    }
+
+    function closeSendModal() {
+      document.getElementById('sendModal').classList.remove('is-active')
+    }
+
+    function validateCompanySelection() {
+      const select = document.getElementById('companySelect')
+      if (!select.value) {
+        alert('Musíte vybrat firmu!')
+        return false
+      }
+      // zde by následovalo odeslání dat na server
+      closeSendModal()
+      return false // prozatím zamezíme submitu
+    }
+  </script>
 </html>
