@@ -10,6 +10,7 @@ import {
   deleteEntry,
   getEntryByIdWithoutSent,
   markEntryAsSent,
+  formatDuration,
 } from './db.js'
 
 const router = express.Router()
@@ -60,6 +61,8 @@ router.get('/entry/:id/edit', async (req, res) => {
   if (!entry) {
     return res.status(404).send('Záznam nenalezen')
   }
+  entry.formattedDuration = isFinite(entry.duration) ? formatDuration(entry.duration * 1000) : '00:00:00'
+
   res.render('editEntry', { entry })
 })
 
@@ -85,10 +88,14 @@ router.get('/history', async (req, res) => {
 
 router.post('/entry/:id/update', async (req, res) => {
   const id = Number(req.params.id)
-  const { start, end, duration, description } = req.body
+  const { start, end, description } = req.body
 
   try {
-    await updateEntry(id, { start, end, duration, description })
+    await updateEntry(id, {
+      description,
+      start,
+      end,
+    })
     res.redirect('/history')
   } catch (err) {
     console.error('Chyba při aktualizaci záznamu:', err)
