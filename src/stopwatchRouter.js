@@ -1,5 +1,6 @@
 import express from 'express'
 import * as controller from './stopwatchController.js'
+import * as functions from './app.js'
 
 import { getFullHistory, getEntryById, createEntry, updateEntry, deleteEntry } from './db.js'
 
@@ -86,5 +87,57 @@ router.post('/entry/:id/update', async (req, res) => {
     res.status(500).send('Nepodařilo se aktualizovat záznam')
   }
 })
+
+router.post('/send/:id', async (req, res) => {
+  const id = parseInt(req.params.id)
+  const { company } = req.body
+
+  try {
+    const entry = await getEntryById(id)
+    if (!entry) {
+      return res.status(404).json({ error: 'Záznam nenalezen' })
+    }
+
+    const jsonToSend = {
+      winstrom: {
+        '@version': '1.0',
+        udalost: [
+          {
+            dokonceni: convertToFlexibeeFormat(entry.end),
+            druhUdalK: 'druhUdal.ukol',
+            predmet: entry.description,
+            zahajeni: convertToFlexibeeFormat(entry.start),
+            firma: `code:${company}`,
+          },
+        ],
+      },
+    }
+
+    const response = await functions.sendData(
+      'sch-solution.flexibee.eu',
+      'sch_solution_s_r_o_1',
+      '/udalost.json',
+      jsonToSend,
+    )
+
+    res.status(200).json({ message: 'Úspěšně odesláno', response })
+  } catch (error) {
+    console.error('Chyba při odesílání dat:', error)
+    res.status(500).json({ error: 'Nepodařilo se odeslat záznam', detail: error.message })
+  }
+})
+
+function convertToFlexibeeFormat(input) {
+  if (!input || typeof input !== 'string' || !input.includes(', ')) {
+    throw new Error('Invalid input time format: ' + input)
+  }
+
+  const [time, date] = input.split(', ')
+  const [day, month, year] = date.split('.')
+
+  var x = `${year}-${month}-${day}T${time}+01:00`
+  console.log('Converting to FlexiBee format:', x)
+  return `${year}-${month}-${day}T${time}+01:00`
+}
 
 export default router

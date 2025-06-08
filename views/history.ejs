@@ -46,13 +46,18 @@
                   style="display: inline"
                   onsubmit="return confirm('Opravdu smazat záznam #<%= entry.id %>?');"
                 >
+                  <input type="hidden" id="entryId" name="entryId" />
                   <button class="button is-small is-danger" title="Smazat">
                     <span class="icon"><i class="fas fa-trash"></i></span>
                   </button>
                 </form>
 
                 <!-- Send: nic zatím neprovádí -->
-                <button class="button is-small is-warning" onclick="openSendModal(<%= entry.id %>)" title="Odeslat">
+                <button
+                  class="button is-small is-warning send-button"
+                  onclick="openSendModal('<%= entry.id %>')"
+                  title="Odeslat"
+                >
                   <span class="icon"><i class="fas fa-paper-plane"></i></span>
                 </button>
               </td>
@@ -68,16 +73,15 @@
         <div class="modal" id="sendModal">
           <div class="modal-background" onclick="closeSendModal()"></div>
           <div class="modal-content box">
-            <form onsubmit="return validateCompanySelection()">
+            <form id="sendForm">
               <div class="field">
-                <label class="label">Vyberte firmu</label>
+                <label class="label">Vyber firmu</label>
                 <div class="control">
                   <div class="select is-fullwidth">
                     <select id="companySelect" required>
-                      <option value="">-- Vyberte firmu --</option>
-                      <option value="Firma A">Firma A</option>
-                      <option value="Firma B">Firma B</option>
-                      <option value="Firma C">Firma C</option>
+                      <option value="">-- Vyber firmu --</option>
+                      <option value="PRUSA">Prusa Development a.s.</option>
+                      <option value="PRUSA0">Prusa Polymers a.s.</option>
                     </select>
                   </div>
                 </div>
@@ -96,24 +100,57 @@
   </body>
 
   <script>
-    function openSendModal(id) {
-      // Můžeš si tady třeba uložit id do hidden inputu, pokud budeš chtít
+    let currentEntryId = null
+
+    function openSendModal(entryId) {
+      currentEntryId = entryId
       document.getElementById('sendModal').classList.add('is-active')
     }
 
     function closeSendModal() {
+      currentEntryId = null
       document.getElementById('sendModal').classList.remove('is-active')
     }
 
-    function validateCompanySelection() {
-      const select = document.getElementById('companySelect')
-      if (!select.value) {
+    async function validateCompanySelection(event) {
+      event.preventDefault()
+      const company = document.getElementById('companySelect').value
+
+      if (!company || !currentEntryId) {
         alert('Musíte vybrat firmu!')
-        return false
+        return
       }
-      // zde by následovalo odeslání dat na server
+
+      try {
+        const response = await fetch(`/api/stopwatch/send/${currentEntryId}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ company }),
+        })
+
+        const data = await response.json()
+
+        if (response.ok) {
+          alert('Záznam úspěšně odeslán!')
+        } else {
+          alert('Chyba při odesílání: ' + data.error)
+          console.error(data)
+        }
+      } catch (err) {
+        alert('Chyba při komunikaci se serverem.')
+        console.error(err)
+      }
+
       closeSendModal()
-      return false // prozatím zamezíme submitu
     }
+
+    document.addEventListener('DOMContentLoaded', function () {
+      const form = document.getElementById('sendForm')
+      if (form) {
+        form.addEventListener('submit', validateCompanySelection)
+      }
+    })
   </script>
 </html>
