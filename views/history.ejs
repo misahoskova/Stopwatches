@@ -4,9 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Historie stopek</title>
-    <!-- Bulma CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css" />
-    <!-- Font Awesome pro ikonky -->
     <script defer src="https://use.fontawesome.com/releases/v5.15.4/js/all.js"></script>
   </head>
   <body>
@@ -34,12 +32,10 @@
               <td><%= entry.duration %></td>
               <td><%= entry.description %></td>
               <td>
-                <!-- Edit: zobrazí detail pro úpravu -->
                 <a href="/api/stopwatch/entry/<%= entry.id %>/edit" class="button is-small is-info" title="Upravit">
                   <span class="icon"><i class="fas fa-edit"></i></span>
                 </a>
 
-                <!-- Delete: vyžádá potvrzení, pak smaže -->
                 <form
                   action="/api/stopwatch/entry/<%= entry.id %>/delete"
                   method="post"
@@ -52,7 +48,6 @@
                   </button>
                 </form>
 
-                <!-- Send: nic zatím neprovádí -->
                 <button
                   class="button is-small is-warning send-button"
                   onclick="openSendModal('<%= entry.id %>')"

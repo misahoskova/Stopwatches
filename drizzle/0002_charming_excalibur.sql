@@ -1,0 +1,1 @@
+ALTER TABLE `stopwatchHistoryTable` ADD `sent` integer DEFAULT 0 NOT NULL;

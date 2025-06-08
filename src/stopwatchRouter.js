@@ -2,7 +2,15 @@ import express from 'express'
 import * as controller from './stopwatchController.js'
 import * as functions from './app.js'
 
-import { getFullHistory, getEntryById, createEntry, updateEntry, deleteEntry } from './db.js'
+import {
+  getFullHistory,
+  getEntryById,
+  createEntry,
+  updateEntry,
+  deleteEntry,
+  getEntryByIdWithoutSent,
+  markEntryAsSent,
+} from './db.js'
 
 const router = express.Router()
 
@@ -93,7 +101,7 @@ router.post('/send/:id', async (req, res) => {
   const { company } = req.body
 
   try {
-    const entry = await getEntryById(id)
+    const entry = await getEntryByIdWithoutSent(id)
     if (!entry) {
       return res.status(404).json({ error: 'Záznam nenalezen' })
     }
@@ -119,6 +127,8 @@ router.post('/send/:id', async (req, res) => {
       '/udalost.json',
       jsonToSend,
     )
+
+    await markEntryAsSent(id)
 
     res.status(200).json({ message: 'Úspěšně odesláno', response })
   } catch (error) {

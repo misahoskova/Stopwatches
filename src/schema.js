@@ -7,6 +7,7 @@ export const stopwatchHistoryTable = sqliteTable('stopwatchHistoryTable', {
   start: text().notNull(),
   end: text().notNull(),
   duration: int().notNull(),
+  sent: int({ mode: 'boolean' }).notNull().default(0),
 })
 
 // export const usersTable = sqliteTable('users', {
