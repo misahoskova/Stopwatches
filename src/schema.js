@@ -8,59 +8,43 @@ export const stopwatchHistoryTable = sqliteTable('stopwatchHistoryTable', {
   end: text().notNull(),
   duration: int().notNull(),
   sent: int({ mode: 'boolean' }).notNull().default(0),
+  userId: int().references(() => usersTable.id),
 })
 
-// export const usersTable = sqliteTable('users', {
-//   id: int().primaryKey({ autoIncrement: true }),
-//   username: text().notNull().unique(),
-//   hashedPassword: text().notNull(),
-//   salt: text().notNull(),
-//   token: text().notNull(),
-// })
+export const usersTable = sqliteTable('users', {
+  id: int().primaryKey({ autoIncrement: true }),
+  username: text().notNull().unique(),
+  hashedPassword: text().notNull(),
+  salt: text().notNull(),
+  token: text().notNull(),
+})
 
-// export const stopwatchHistoryRelations = relations(stopwatchHistoryTable, ({ one }) => ({
-//   user: one(usersTable),
-// }))
+export const stopwatchHistoryRelations = relations(stopwatchHistoryTable, ({ one }) => ({
+  user: one(usersTable, {
+    fields: [stopwatchHistoryTable.userId],
+    references: [usersTable.id],
+  }),
+}))
 
-// export const usersRelations = relations(usersTable, ({ many }) => ({
-//   todos: many(stopwatchHistoryTable),
-// }))
+export const usersRelations = relations(usersTable, ({ many }) => ({
+  entries: many(stopwatchHistoryTable),
+}))
 
-// export const createUser = async (username, password) => {
-//   const salt = crypto.randomBytes(16).toString('hex')
-//   const hashedPassword = crypto.pbkdf2Sync(password, salt, 100000, 64, 'sha512').toString('hex')
-//   const token = crypto.randomBytes(16).toString('hex')
+export const createUser = async (username, password) => {
+  const salt = crypto.randomBytes(16).toString('hex')
+  const hashedPassword = crypto.pbkdf2Sync(password, salt, 100000, 64, 'sha512').toString('hex')
+  const token = crypto.randomBytes(16).toString('hex')
 
-//   const user = await db
-//     .insert(usersTable)
-//     .values({
-//       username,
-//       hashedPassword,
-//       token,
-//       salt,
-//     })
-//     .returning(usersTable)
-//     .get()
+  const user = await db
+    .insert(usersTable)
+    .values({
+      username,
+      hashedPassword,
+      token,
+      salt,
+    })
+    .returning(usersTable)
+    .get()
 
-//   return user
-// }
-
-// export const getUser = async (username, password) => {
-//   const user = await db.select().from(usersTable).where(eq(usersTable.username, username)).get()
-
-//   if (!user) return null
-
-//   const hashedPassword = crypto.pbkdf2Sync(password, user.salt, 100000, 64, 'sha512').toString('hex')
-
-//   if (user.hashedPassword !== hashedPassword) return null
-
-//   return user
-// }
-
-// export const getUserByToken = async (token) => {
-//   if (!token) return null
-
-//   const user = await db.select().from(usersTable).where(eq(usersTable.token, token)).get()
-
-//   return user
-// }
+  return user
+}

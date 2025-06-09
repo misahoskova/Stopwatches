@@ -98,3 +98,23 @@ export const deleteEntry = async (id) => {
 export const markEntryAsSent = async (id) => {
   await db.update(stopwatchHistoryTable).set({ sent: true }).where(eq(stopwatchHistoryTable.id, id))
 }
+
+export const getUser = async (username, password) => {
+  const user = await db.select().from(usersTable).where(eq(usersTable.username, username)).get()
+
+  if (!user) return null
+
+  const hashedPassword = crypto.pbkdf2Sync(password, user.salt, 100000, 64, 'sha512').toString('hex')
+
+  if (user.hashedPassword !== hashedPassword) return null
+
+  return user
+}
+
+export const getUserByToken = async (token) => {
+  if (!token) return null
+
+  const user = await db.select().from(usersTable).where(eq(usersTable.token, token)).get()
+
+  return user
+}
