@@ -76,6 +76,8 @@ export async function sendData(hostname, company, path, jsonData) {
 
     const response = await postResponse(options, JSON.stringify(jsonData))
     console.log('send:', response.winstrom.success)
+    console.log('response:', response)
+    console.log(JSON.stringify(jsonData))
   } catch (error) {
     console.error('Error sending data:', error)
   }

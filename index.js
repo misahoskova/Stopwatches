@@ -3,8 +3,9 @@ import path from 'path'
 import { fileURLToPath } from 'url'
 import stopwatchRouter from './src/stopwatchRouter.js'
 import { getStateForRender } from './src/stopwatchController.js'
-import { getFullHistory } from './src/db.js'
+import { getFullHistory, getUserByToken, getUser, createUser } from './src/db.js'
 import bodyParser from 'body-parser'
+import cookieParser from 'cookie-parser'
 
 const app = express()
 const port = 3000
@@ -13,13 +14,23 @@ const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
 app.use(express.static(path.join(__dirname, 'public')))
+app.use(cookieParser())
 app.use(express.json())
-app.use(express.urlencoded({ extended: false }))
+app.use(express.urlencoded({ extended: true }))
 // app.use('/', stopwatchRouter)
 
 app.use(bodyParser.json())
 
-app.use('/api/stopwatch', stopwatchRouter)
+app.use(async (req, res, next) => {
+  const token = req.cookies.token
+  if (token) {
+    const user = await getUserByToken(token)
+    if (user) {
+      req.user = user
+    }
+  }
+  next()
+})
 
 app.set('view engine', 'ejs')
 app.set('views', path.join(__dirname, 'views'))
@@ -31,13 +42,59 @@ app.get('/', (req, res) => {
 
 app.get('/history', async (req, res) => {
   try {
-    const entries = await getFullHistory()
+    const entries = await getFullHistory(req.user.id)
     res.render('history', { entries })
   } catch (err) {
     console.error(err)
     res.status(500).send('Chyba při načítání historie')
   }
 })
+
+app.get('/login', (req, res) => {
+  res.render('login')
+})
+
+app.get('/register', (req, res) => {
+  res.render('registration')
+})
+
+app.post('/login', async (req, res) => {
+  const { username, password } = req.body
+  const user = await getUser(username, password)
+  if (!user) return res.status(401).send('Neplatné přihlašovací údaje')
+
+  res.cookie('token', user.token, { httpOnly: true })
+  res.redirect('/')
+})
+
+app.post('/register', async (req, res) => {
+  const { username, password } = req.body
+
+  try {
+    const user = await createUser(username, password)
+
+    res.cookie('token', user.token, { httpOnly: true })
+    return res.redirect('/login')
+  } catch (err) {
+    if (err.message.includes('UNIQUE constraint failed')) {
+      return res.render('registration.ejs', {
+        error: 'Uživatel s tímto jménem již existuje.',
+      })
+    }
+
+    console.error('Chyba při registraci:', err)
+    return res.render('registration.ejs', {
+      error: 'Nepodařilo se vytvořit uživatele. Zkuste to prosím znovu.',
+    })
+  }
+})
+
+app.post('/logout', (req, res) => {
+  res.clearCookie('token')
+  res.redirect('/login')
+})
+
+app.use('/api/stopwatch', stopwatchRouter)
 
 app.listen(port, () => {
   console.log(`Server běží na http://localhost:${port}`)

@@ -14,6 +14,7 @@ import {
 } from './db.js'
 
 const router = express.Router()
+router.use(onlyLoggedIn)
 
 router.post('/start', (req, res) => {
   controller.startStopwatch()
@@ -28,7 +29,20 @@ router.post('/stop', (req, res) => {
 router.post('/save', async (req, res) => {
   try {
     const { description, start, end, duration } = req.body
-    await createEntry({ description, start, end, duration })
+    const user = req.user
+
+    if (!user) {
+      return res.status(401).send('Nepřihlášený uživatel')
+    }
+
+    await createEntry({
+      description,
+      start,
+      end,
+      duration,
+      userId: user.id,
+    })
+
     res.redirect('/')
   } catch (err) {
     console.error('Chyba při ukládání záznamu:', err)
@@ -36,14 +50,14 @@ router.post('/save', async (req, res) => {
   }
 })
 
-router.get('/history', async (req, res) => {
-  try {
-    const history = await getFullHistory()
-    res.json(history)
-  } catch (err) {
-    res.status(500).json({ error: err.message })
-  }
-})
+// router.get('/history', async (req, res) => {
+//   try {
+//     const history = await getFullHistory()
+//     res.json(history)
+//   } catch (err) {
+//     res.status(500).json({ error: err.message })
+//   }
+// })
 
 router.get('/entry/:id', async (req, res) => {
   try {
@@ -106,6 +120,7 @@ router.post('/entry/:id/update', async (req, res) => {
 router.post('/send/:id', async (req, res) => {
   const id = parseInt(req.params.id)
   const { company } = req.body
+  const username = req.user?.username ?? 'Neznámý uživatel'
 
   try {
     const entry = await getEntryByIdWithoutSent(id)
@@ -118,6 +133,7 @@ router.post('/send/:id', async (req, res) => {
         '@version': '1.0',
         udalost: [
           {
+            popis: username,
             dokonceni: convertToFlexibeeFormat(entry.end),
             druhUdalK: 'druhUdal.ukol',
             predmet: entry.description,
@@ -155,6 +171,13 @@ function convertToFlexibeeFormat(input) {
   var x = `${year}-${month}-${day}T${time}+01:00`
   console.log('Converting to FlexiBee format:', x)
   return `${year}-${month}-${day}T${time}+01:00`
+}
+
+function onlyLoggedIn(req, res, next) {
+  if (!req.user) {
+    return res.redirect('/login')
+  }
+  next()
 }
 
 export default router

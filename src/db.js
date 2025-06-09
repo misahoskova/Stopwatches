@@ -2,7 +2,7 @@ import crypto from 'crypto'
 import { drizzle } from 'drizzle-orm/libsql'
 import { eq } from 'drizzle-orm'
 import { migrate } from 'drizzle-orm/libsql/migrator'
-import { stopwatchHistoryTable } from './schema.js'
+import { stopwatchHistoryTable, usersTable } from './schema.js'
 
 const isTest = process.env.NODE_ENV === 'test'
 
@@ -43,8 +43,8 @@ export function formatDuration(milliseconds) {
   return `${hours}:${minutes}:${seconds}`
 }
 
-export const getFullHistory = async () => {
-  return await db.select().from(stopwatchHistoryTable).all()
+export const getFullHistory = async (userId) => {
+  return await db.select().from(stopwatchHistoryTable).where(eq(stopwatchHistoryTable.userId, userId)).all()
 }
 
 export const getEntryById = async (id) => {
@@ -65,10 +65,10 @@ export const getEntryByIdWithoutSent = async (id) => {
     .get()
 }
 
-export const createEntry = async ({ description, start, end, duration }) => {
+export const createEntry = async ({ description, start, end, duration, userId }) => {
   return await db
     .insert(stopwatchHistoryTable)
-    .values({ description, start, end, duration })
+    .values({ description, start, end, duration, userId })
     .returning(stopwatchHistoryTable)
     .get()
 }
@@ -97,6 +97,31 @@ export const deleteEntry = async (id) => {
 
 export const markEntryAsSent = async (id) => {
   await db.update(stopwatchHistoryTable).set({ sent: true }).where(eq(stopwatchHistoryTable.id, id))
+}
+
+export const createUser = async (username, password) => {
+  const existingUser = await db.select().from(usersTable).where(eq(usersTable.username, username)).get()
+
+  if (existingUser) {
+    throw new Error('Uživatel s tímto jménem již existuje.')
+  }
+
+  const salt = crypto.randomBytes(16).toString('hex')
+  const hashedPassword = crypto.pbkdf2Sync(password, salt, 100000, 64, 'sha512').toString('hex')
+  const token = crypto.randomBytes(16).toString('hex')
+
+  const user = await db
+    .insert(usersTable)
+    .values({
+      username,
+      hashedPassword,
+      token,
+      salt,
+    })
+    .returning()
+    .get()
+
+  return user
 }
 
 export const getUser = async (username, password) => {
