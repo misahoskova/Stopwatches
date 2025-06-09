@@ -3,7 +3,7 @@ import * as controller from './stopwatchController.js'
 import * as functions from './app.js'
 
 import {
-  getFullHistory,
+  getFullHistoryByUserId,
   getEntryById,
   createEntry,
   updateEntry,
@@ -14,6 +14,7 @@ import {
 } from './db.js'
 
 const router = express.Router()
+router.use(onlyLoggedIn)
 
 router.post('/start', (req, res) => {
   controller.startStopwatch()
@@ -28,7 +29,20 @@ router.post('/stop', (req, res) => {
 router.post('/save', async (req, res) => {
   try {
     const { description, start, end, duration } = req.body
-    await createEntry({ description, start, end, duration })
+    const user = req.user
+
+    if (!user) {
+      return res.status(401).send('Nepřihlášený uživatel')
+    }
+
+    await createEntry({
+      description,
+      start,
+      end,
+      duration,
+      userId: user.id,
+    })
+
     res.redirect('/')
   } catch (err) {
     console.error('Chyba při ukládání záznamu:', err)
@@ -37,12 +51,12 @@ router.post('/save', async (req, res) => {
 })
 
 router.get('/history', async (req, res) => {
-  try {
-    const history = await getFullHistory()
-    res.json(history)
-  } catch (err) {
-    res.status(500).json({ error: err.message })
+  if (!req.user) {
+    return res.status(401).send('Přístup jen pro přihlášené uživatele')
   }
+
+  const entries = await getFullHistoryByUserId(req.user.id)
+  res.render('history', { entries })
 })
 
 router.get('/entry/:id', async (req, res) => {
@@ -79,11 +93,6 @@ router.post('/entry/:id/delete', async (req, res) => {
 
 router.get('/elapsed', (req, res) => {
   res.json(controller.getElapsed())
-})
-
-router.get('/history', async (req, res) => {
-  const entries = await getFullHistory()
-  res.render('history', { entries })
 })
 
 router.post('/entry/:id/update', async (req, res) => {
@@ -144,6 +153,11 @@ router.post('/send/:id', async (req, res) => {
   }
 })
 
+// router.get('/history', onlyForUsers, async (req, res) => {
+//   const entries = await getFullHistoryByUserId(req.user.id)
+//   res.render('history', { entries })
+// })
+
 function convertToFlexibeeFormat(input) {
   if (!input || typeof input !== 'string' || !input.includes(', ')) {
     throw new Error('Invalid input time format: ' + input)
@@ -155,6 +169,13 @@ function convertToFlexibeeFormat(input) {
   var x = `${year}-${month}-${day}T${time}+01:00`
   console.log('Converting to FlexiBee format:', x)
   return `${year}-${month}-${day}T${time}+01:00`
+}
+
+function onlyLoggedIn(req, res, next) {
+  if (!req.user) {
+    return res.redirect('/login')
+  }
+  next()
 }
 
 export default router

@@ -23,6 +23,7 @@
   "dependencies": {
     "@hono/node-server": "^1.14.2",
     "@libsql/client": "^0.15.7",
+    "cookie-parser": "^1.4.7",
     "drizzle-kit": "^0.31.1",
     "drizzle-orm": "^0.43.1",
     "ejs": "^3.1.10",

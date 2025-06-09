@@ -2,7 +2,7 @@ import crypto from 'crypto'
 import { drizzle } from 'drizzle-orm/libsql'
 import { eq } from 'drizzle-orm'
 import { migrate } from 'drizzle-orm/libsql/migrator'
-import { stopwatchHistoryTable } from './schema.js'
+import { stopwatchHistoryTable, usersTable } from './schema.js'
 
 const isTest = process.env.NODE_ENV === 'test'
 
@@ -10,17 +10,6 @@ export const db = drizzle({
   connection: isTest ? 'file::memory:' : 'file:db.sqlite',
 })
 await migrate(db, { migrationsFolder: 'drizzle' })
-
-function calculateDuration(startStr, endStr) {
-  const start = new Date(startStr)
-  const end = new Date(endStr)
-
-  if (isNaN(start.getTime()) || isNaN(end.getTime())) {
-    return null
-  }
-
-  return Math.round((end - start) / 1000)
-}
 
 function parseCzechDatetime(input) {
   const [timePart, datePart] = input.split(', ')
@@ -35,16 +24,17 @@ function calculateDurationInSeconds(startStr, endStr) {
   return Math.floor((end - start) / 1000)
 }
 
-export function formatDuration(milliseconds) {
-  const totalSeconds = Math.floor(milliseconds / 1000)
+export function formatDuration(ms) {
+  const totalSeconds = Math.floor(ms / 1000)
   const hours = String(Math.floor(totalSeconds / 3600)).padStart(2, '0')
   const minutes = String(Math.floor((totalSeconds % 3600) / 60)).padStart(2, '0')
   const seconds = String(totalSeconds % 60).padStart(2, '0')
   return `${hours}:${minutes}:${seconds}`
 }
 
-export const getFullHistory = async () => {
-  return await db.select().from(stopwatchHistoryTable).all()
+export const getFullHistoryByUserId = async (userId) => {
+  if (!userId) throw new Error('userId is undefined')
+  return await db.select().from(stopwatchHistoryTable).where(eq(stopwatchHistoryTable.userId, userId)).all()
 }
 
 export const getEntryById = async (id) => {
@@ -65,10 +55,10 @@ export const getEntryByIdWithoutSent = async (id) => {
     .get()
 }
 
-export const createEntry = async ({ description, start, end, duration }) => {
+export const createEntry = async ({ description, start, end, duration, userId }) => {
   return await db
     .insert(stopwatchHistoryTable)
-    .values({ description, start, end, duration })
+    .values({ description, start, end, duration, userId })
     .returning(stopwatchHistoryTable)
     .get()
 }
@@ -97,4 +87,49 @@ export const deleteEntry = async (id) => {
 
 export const markEntryAsSent = async (id) => {
   await db.update(stopwatchHistoryTable).set({ sent: true }).where(eq(stopwatchHistoryTable.id, id))
+}
+
+export const createUser = async (username, password) => {
+  const existingUser = await db.select().from(usersTable).where(eq(usersTable.username, username)).get()
+
+  if (existingUser) {
+    throw new Error('Uživatel s tímto jménem již existuje.')
+  }
+
+  const salt = crypto.randomBytes(16).toString('hex')
+  const hashedPassword = crypto.pbkdf2Sync(password, salt, 100000, 64, 'sha512').toString('hex')
+  const token = crypto.randomBytes(16).toString('hex')
+
+  const user = await db
+    .insert(usersTable)
+    .values({
+      username,
+      hashedPassword,
+      token,
+      salt,
+    })
+    .returning()
+    .get()
+
+  return user
+}
+
+export const getUser = async (username, password) => {
+  const user = await db.select().from(usersTable).where(eq(usersTable.username, username)).get()
+
+  if (!user) return null
+
+  const hashedPassword = crypto.pbkdf2Sync(password, user.salt, 100000, 64, 'sha512').toString('hex')
+
+  if (user.hashedPassword !== hashedPassword) return null
+
+  return user
+}
+
+export const getUserByToken = async (token) => {
+  if (!token) return null
+
+  const user = await db.select().from(usersTable).where(eq(usersTable.token, token)).get()
+
+  return user
 }

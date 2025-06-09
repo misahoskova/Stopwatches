@@ -1,0 +1,1 @@
+ALTER TABLE `stopwatchHistoryTable` ADD `userId` integer REFERENCES users(id);

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="cs">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Registrace</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css" />
+  </head>
+  <body>
+    <section class="section">
+      <div class="container">
+        <h1 class="title">Registrace</h1>
+
+        <% if (typeof error !== 'undefined') { %>
+        <div class="notification is-danger"><strong>Chyba:</strong> <%= error %></div>
+        <% } %>
+
+        <form action="/register" method="post">
+          <div class="field">
+            <label class="label">Uživatelské jméno</label>
+            <div class="control">
+              <input class="input" type="text" name="username" required />
+            </div>
+          </div>
+
+          <div class="field">
+            <label class="label">Heslo</label>
+            <div class="control">
+              <input class="input" type="password" name="password" required />
+            </div>
+          </div>
+
+          <div class="field is-grouped">
+            <div class="control">
+              <button class="button is-link" type="submit">Registrovat</button>
+            </div>
+            <div class="control">
+              <a class="button is-text" href="/login">Zpět na přihlášení</a>
+            </div>
+          </div>
+        </form>
+      </div>
+    </section>
+  </body>
+</html>
